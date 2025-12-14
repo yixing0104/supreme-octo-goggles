@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片上传与展示平台</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/carousel.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <!-- 标题区域 -->
+    <header class="header">
+        <h1><i class="fas fa-images"></i> 图片上传与展示平台</h1>
+        <p class="subtitle">支持图片上传、存储和轮播展示功能</p>
+    </header>
+
+    <div class="main-content">
+        <!-- 左侧上传区域 -->
+        <div class="left-panel">
+            <section class="upload-section card">
+                <div class="section-header">
+                    <h2><i class="fas fa-cloud-upload-alt"></i> 上传图片</h2>
+                    <p>支持JPG、PNG、GIF格式，单张图片不超过5MB</p>
+                </div>
+
+                <!-- 上传表单 -->
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-file-upload"></i>
+                    </div>
+                    <p class="upload-text">拖放图片到此处或点击选择文件</p>
+                    <p class="upload-subtext">支持拖拽上传，可一次选择多张图片</p>
+                    <input type="file" id="imageInput" multiple accept="image/*">
+                    <label for="imageInput" class="browse-btn">选择图片</label>
+                </div>
+
+                <!-- 上传进度 -->
+                <div class="progress-section" id="progressSection" style="display: none;">
+                    <div class="progress-header">
+                        <h4>上传进度</h4>
+                        <span id="progressStatus">准备上传...</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progressText">0%</span>
+                        <span id="uploadedCount">0/0 张图片</span>
+                    </div>
+                </div>
+
+                <!-- 图片预览 -->
+                <div class="preview-section" id="previewSection">
+                    <h4>图片预览</h4>
+                    <div class="preview-container" id="previewContainer">
+                        <p class="no-preview" id="noPreviewText">暂无图片预览</p>
+                    </div>
+                </div>
+
+                <!-- 上传按钮 -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="uploadBtn" disabled>
+                        <i class="fas fa-upload"></i> 开始上传
+                    </button>
+                    <button class="btn btn-secondary" id="clearBtn">
+                        <i class="fas fa-trash-alt"></i> 清除所有
+                    </button>
+                </div>
+            </section>
+
+            <!-- 图片管理区域 -->
+            <section class="manage-section card">
+                <div class="section-header">
+                    <h2><i class="fas fa-th-list"></i> 图片管理</h2>
+                    <p>已上传的图片列表，点击图片可删除</p>
+                </div>
+                <div class="image-list" id="imageList">
+                    <p class="empty-message" id="emptyMessage">暂无上传的图片</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- 右侧轮播展示区域 -->
+        <div class="right-panel">
+            <section class="carousel-section card">
+                <div class="section-header">
+                    <h2><i class="fas fa-sliders-h"></i> 图片轮播展示</h2>
+                    <p>自动轮播已上传的图片，支持手动控制</p>
+                </div>
+
+                <!-- 轮播容器 -->
+                <div class="carousel-container">
+                    <div class="carousel" id="carousel">
+                        <!-- 轮播图片将通过JS动态插入 -->
+                        <div class="carousel-empty" id="carouselEmpty">
+                            <i class="fas fa-image"></i>
+                            <p>暂无图片可以展示</p>
+                            <p class="empty-subtext">请先上传一些图片</p>
+                        </div>
+                    </div>
+
+                    <!-- 轮播控制 -->
+                    <div class="carousel-controls">
+                        <button class="carousel-btn" id="prevBtn">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="carousel-indicators" id="indicators">
+                            <!-- 指示点将通过JS动态生成 -->
+                        </div>
+                        <button class="carousel-btn" id="nextBtn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- 轮播设置 -->
+                    <div class="carousel-settings">
+                        <div class="setting-group">
+                            <label for="autoPlayToggle">
+                                <input type="checkbox" id="autoPlayToggle" checked>
+                                <span>自动轮播</span>
+                            </label>
+                            <label for="autoPlaySpeed">
+                                间隔时间:
+                                <select id="autoPlaySpeed">
+                                    <option value="2000">2秒</option>
+                                    <option value="3000" selected>3秒</option>
+                                    <option value="5000">5秒</option>
+                                    <option value="8000">8秒</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="carousel-counter">
+                            <span id="currentSlide">0</span> / <span id="totalSlides">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 轮播说明 -->
+                <div class="carousel-info">
+                    <p><i class="fas fa-info-circle"></i> 轮播控制说明：</p>
+                    <ul>
+                        <li>点击左右箭头可以手动切换图片</li>
+                        <li>点击底部的指示点可以跳转到对应的图片</li>
+                        <li>可以开启/关闭自动轮播并设置切换间隔</li>
+                        <li>新上传的图片会自动添加到轮播中</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 系统信息区域 -->
+            <section class="info-section card">
+                <div class="section-header">
+                    <h2><i class="fas fa-info-circle"></i> 系统信息</h2>
+                </div>
+                <div class="info-content">
+                    <div class="info-item">
+                        <span class="info-label">已上传图片:</span>
+                        <span class="info-value" id="totalImages">0 张</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">轮播图片:</span>
+                        <span class="info-value" id="carouselImages">0 张</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">最后上传:</span>
+                        <span class="info-value" id="lastUpload">暂无</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">平台状态:</span>
+                        <span class="info-value status-active">运行正常</span>
+                    </div>
+                </div>
+                <div class="tech-info">
+                    <p><strong>技术栈:</strong> Spring MVC + MyBatis + MySQL</p>
+                    <p><strong>前端:</strong> HTML5 + CSS3 + JavaScript</p>
+                    <p><strong>后端API:</strong> 图片上传、存储、列表获取</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <p>图片上传与展示平台 &copy; 2023 | 基于 Spring MVC + MyBatis 实现</p>
+        <p class="footer-note">本界面为前端原型，后端接口待实现</p>
+    </footer>
+</div>
+
+<!-- 删除确认模态框 -->
+<div class="modal" id="deleteModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-exclamation-triangle"></i> 确认删除</h3>
+            <button class="modal-close" id="closeModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>确定要删除这张图片吗？此操作不可撤销。</p>
+            <div class="modal-preview" id="modalPreview"></div>
+            <p class="modal-filename" id="modalFilename">图片文件名</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancelDelete">取消</button>
+            <button class="btn btn-danger" id="confirmDelete">确认删除</button>
+        </div>
+    </div>
+</div>
+
+<!-- 脚本文件 -->
+<script src="js/api.js"></script>
+<script src="js/upload.js"></script>
+<script src="js/carousel.js"></script>
+<script>
+    // 初始化应用
+    document.addEventListener('DOMContentLoaded', function() {
+        // 初始化上传模块
+        initUpload();
+        // 初始化轮播模块
+        initCarousel();
+        // 初始化模拟数据
+        initMockData();
+    });
+</script>
+</body>
+</html>
